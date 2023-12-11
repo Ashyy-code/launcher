@@ -1,0 +1,86 @@
+/*Font Importers*/
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+
+/*Root Vars*/
+:root{
+    --page-bg:#252525;
+}
+
+/*Body Main*/
+body,html,#app{
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:var(--page-bg);
+    background-image:url('../assets/bg.png');
+    background-size:cover;
+    overflow: hidden;
+}
+
+#app{
+    position: relative;
+    width:100vw;
+    height: 100vh;
+}
+
+.input-wrap{
+    position: absolute;
+    bottom:1rem;
+    right:0;
+
+    input{
+        height:10vh;
+        width:50vw;
+        background:none;
+        font-size:5vw;
+        color:white;
+        border:0;
+        outline:none;
+    }
+}
+
+.user-links{
+    width:100vw;
+    max-width:1200px;
+    margin:0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap:2rem;
+    align-content: center;
+
+    .link{
+        height:150px;
+        width:150px;
+        border-radius: 50%;
+        aspect-ratio: 1;
+        overflow: hidden;
+        border:solid 10px #000000c2;
+        cursor: pointer;
+        transition:all 300ms ease;
+        
+
+        &:hover{
+            border-color: rgb(255, 229, 82);
+        }
+
+        &[suggested="true"]{
+             border-color: rgb(255, 229, 82);
+        }
+
+
+        img{
+            object-fit: cover;
+            width:100%;
+            height:100%;
+            transition:all 300ms ease;
+
+            &:hover{
+                transform:scale(1.2);
+            }
+        }
+    }
+}

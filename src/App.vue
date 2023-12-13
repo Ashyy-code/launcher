@@ -1,5 +1,5 @@
 <template>
-  <div class="user-links animate__animated animate__fadeIn animate__slow">
+  <div v-if="userLinks.length > 0" class="user-links animate__animated animate__fadeIn animate__slower">
     <div
       v-for="userLink in userLinks"
       :key="userLink"
@@ -14,7 +14,7 @@
       >
       <i class="las la-trash" @click="removeItem(userLink.name)"></i>
       </div>
-      <img :src="userLink.img" alt="" @mouseup="gotoURL(userLink.url)" />
+      <img :src="userLink.img" alt="" @mouseup="gotoURL(userLink)" />
     </div>
   </div>
 
@@ -103,7 +103,7 @@ export default {
 
     checkhold(e) {
       this.hoveredLink = e;
-      setTimeout(() => {
+      var tm = setTimeout(() => {
         //if we still hovering..
         if (this.hoveredLink) {
           this.showRemove = true;
@@ -111,16 +111,23 @@ export default {
           this.showRemove = false;
         }
       }, 500);
+      this.activeTimeouts.push(tm);
     },
 
     removehold() {
       this.hoveredLink = null;
       this.showRemove = false;
+      this.activeTimeouts.forEach(tm =>{
+        window.clearTimeout(tm)
+      })
     },
 
     gotoURL(link) {
+      //increment the click count
+      this.incrementClick(link.name);
+      //console.log(link.name)
       this.hoveredLink = null;
-      window.location.href = link;
+      window.location.href = link.url;
     },
 
     async loadUserLinks() {
@@ -145,7 +152,7 @@ export default {
         })
         .then((response) => {
           //log the response to the console
-          console.log(response.data.d);
+          //console.log(response.data.d);
           this.loadUserLinks();
         });
     },
@@ -159,10 +166,25 @@ export default {
         })
         .then((response) => {
           //log the response to the console
-          console.log(response.data.d);
+          //console.log(response.data.d);
           this.loadUserLinks();
         });
     },
+
+
+    async incrementClick(itemName){
+      await axios
+        .post("https://ashypls.com/endpoints/launcher.asmx/incrementClick", {
+          contentType: "application/json",
+          linkName: itemName,
+          username: this.user,
+        })
+        .then((response) => {
+          //log the response to the console
+          //console.log(response.data.d);
+          //this.loadUserLinks();
+        });
+    }
 
   },
   data() {
@@ -173,6 +195,7 @@ export default {
       suggestedLink: null,
       hoveredLink: null,
       showRemove: false,
+      activeTimeouts:[]
     };
   },
 };

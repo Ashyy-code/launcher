@@ -51,6 +51,7 @@ export default {
 
     //get the user data
     this.loadUserLinks();
+    this.loadUserHistory();
   },
   methods: {
     checkSubmit(e) {
@@ -69,8 +70,8 @@ export default {
         }
 
         //begin the search
-        window.location.href =
-          "https://www.google.com/search?q=" + this.searchTerm;
+        this.setNewHistoryItem();
+        window.location.href = "https://www.google.com/search?q=" + this.searchTerm;
         //console.log('https://www.google.com/search?q=' + this.searchTerm);
       } else {
         //check for up down
@@ -143,6 +144,17 @@ export default {
         });
     },
 
+
+    async loadUserHistory(){
+      await axios.post("https://ashypls.com/endpoints/launcher.asmx/getUserHistory",{
+        contentType:'application/json',
+        username:this.user
+      }).then(response =>{
+        this.userHistory = JSON.parse(response.data.d);
+        console.log(this.userHistory);
+      })
+    },
+
     async addNewLink() {
       await axios
         .post("https://ashypls.com/endpoints/launcher.asmx/saveNewLink", {
@@ -154,6 +166,21 @@ export default {
           //log the response to the console
           //console.log(response.data.d);
           this.loadUserLinks();
+        });
+    },
+
+
+    async setNewHistoryItem(){
+      await axios
+        .post("https://ashypls.com/endpoints/launcher.asmx/setUserHistoryItem", {
+          contentType: "application/json",
+          item: this.searchTerm,
+          username: this.user,
+        })
+        .then((response) => {
+          //log the response to the console
+          //console.log(response.data.d);
+          this.loadUserHistory();
         });
     },
 
@@ -195,7 +222,8 @@ export default {
       suggestedLink: null,
       hoveredLink: null,
       showRemove: false,
-      activeTimeouts:[]
+      activeTimeouts:[],
+      userHistory:[],
     };
   },
 };

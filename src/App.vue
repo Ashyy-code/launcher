@@ -18,6 +18,12 @@
     </div>
   </div>
 
+  <div class="history-wrap" v-if="filteredUserHistory.length > 0">
+    <div v-for="historyItem in filteredUserHistory" :key="historyItem.historyID" class="history-item">
+      {{ historyItem.fullTerm }}
+    </div>
+  </div>
+
   <div class="input-wrap">
     <input
       id="inpMain"
@@ -55,6 +61,8 @@ export default {
   },
   methods: {
     checkSubmit(e) {
+      this.filteredUserHistory = [];
+
       if (e.code == "Enter") {
         //check addnew
         if (this.searchTerm.toLowerCase().startsWith("addnew")) {
@@ -75,6 +83,18 @@ export default {
         //console.log('https://www.google.com/search?q=' + this.searchTerm);
       } else {
         //check for up down
+        if(e.code == "ArrowUp"){
+          document.querySelector("#inpMain").blur();
+        }
+
+        //filter the user history list
+        this.userHistory.forEach(userHistoryItem =>{
+          if (userHistoryItem.fullTerm.toLowerCase().includes(this.searchTerm.toLowerCase()) && this.searchTerm != ""){
+            this.filteredUserHistory.push(userHistoryItem);
+          }
+        })
+
+        //check search term
         if (this.searchTerm.includes(" ")) {
           this.suggestedLink = null;
           return;
@@ -224,6 +244,7 @@ export default {
       showRemove: false,
       activeTimeouts:[],
       userHistory:[],
+      filteredUserHistory:[],
     };
   },
 };
